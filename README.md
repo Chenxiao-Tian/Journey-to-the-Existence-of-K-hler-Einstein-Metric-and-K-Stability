@@ -1,4 +1,4 @@
-# Journey-to-the-Existence-of-K-hler-Einstein-Metric-and-K-Stability
+# Journey-to-the-Existence-of-Kahler-Einstein-Metric-and-K-Stability
 Paper Status: Accepted by Journal of Southwest Jiaotong University (A Chinese Core Journal), accepted at September 23th,2021.
 
 Abstract: In this paper, aiming at a series of problems on the existence of Kähler-Einstein metrics on complex Kä hler manifolds, we focus on the historical context and background of the problem research, the induction and collation of relevant important literature, as well as the research status and prospects of the problem to give it a summary. Among them, we will pay more attention to the case when the first Chern class is positive. Especially, since the concept of K-stability of Kä hler Manifolds (or Fano varieties) has been playing a leading role in the transformation and solution of this sub case problem for more than 20 years, we will also pay attention to combing the historical context and important literature on K-stability
