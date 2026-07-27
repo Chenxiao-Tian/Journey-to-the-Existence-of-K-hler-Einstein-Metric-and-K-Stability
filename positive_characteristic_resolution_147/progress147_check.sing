@@ -1,0 +1,18 @@
+// Optional Singular checks for Round 147 counterexample families.
+// No verification claim is made unless this script is actually run.
+ring R = 0,(t,x,y),dp;
+ideal K1 = x, y*(y-t);
+ideal J1 = std(K1);
+vdim(J1); // expected generic module rank information is handled over k[t] in Python
+
+ideal K2 = x2, x*y, y3-t*x;
+ideal J2 = std(K2);
+J2;
+
+ideal K3 = x, y2-t;
+ideal J3 = std(K3);
+J3;
+
+// Fibre t=0 of X-147-02
+ideal K20 = subst(K2,t,0);
+std(K20);
