@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - tmp-positive-characteristic-resolution-147
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -64,7 +67,7 @@ jobs:
           for e in entries:
               lines += [f"## {e['id']} - {e['title']}",f"- Status: `{e['status']}`",f"- Data: `{e['equation_or_data']}`",f"- Behavior: {e['observed_behavior']}",f"- Certificate/failure: `{e['certificate_or_failure']}`",f"- Canonical hash: `{e['canonical_hash']}`",'']
           (root/'example_library_147_patch.md').write_text('\n'.join(lines),encoding='utf-8')
-          keep=[p for p in root.iterdir() if p.is_file() and p.name not in {'progress147_calc.py.bak'}]
+          keep=[p for p in root.iterdir() if p.is_file()]
           sums=[]
           for p in sorted(keep):
               sums.append(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}")
