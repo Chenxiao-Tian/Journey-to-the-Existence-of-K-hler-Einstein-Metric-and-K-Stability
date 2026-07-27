@@ -1,0 +1,424 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[margin=2.05cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,enumitem}
+\usepackage{xcolor,hyperref,fancyhdr,tcolorbox,listings}
+\usepackage{microtype}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!55!black,citecolor=blue!50!black}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.35em}
+\setlist{itemsep=0.25em,topsep=0.35em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{147.0 研究推进}
+\fancyhead[R]{正特征奇点消解}
+\fancyfoot[C]{\thepage}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{definition}[theorem]{定义}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{counterexample}[theorem]{反例}
+\newtheorem{conjecture}[theorem]{猜想}
+\newcommand{\Sing}{\operatorname{Sing}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\FERCC}{\mathrm{FERCC}}
+\newcommand{\Hrel}{\mathscr H_{\mathrm{rel}}}
+\newcommand{\cO}{\mathcal O}
+\newcommand{\G}{\mathcal G}
+\newcommand{\K}{\mathcal K}
+\newcommand{\R}{\mathfrak R}
+\tcbset{colback=blue!3,colframe=blue!45!black,arc=1mm,boxrule=0.6pt}
+\lstset{basicstyle=\ttfamily\small,frame=single,breaklines=true,columns=fullflexible}
+\title{任意维正特征奇点消解研究推进 147.0\\[0.4em]
+\Large 有限 étale 相对完全点簇、Hoskin--Deligne 向量束秩\\与正维余项族编译器}
+\author{迭代研究基线 0.0--147.0\\算法版本 \texttt{R-v147-AC}}
+\date{2026 年 7 月 27 日}
+\begin{document}
+\maketitle
+\begin{tcolorbox}[title=真实性边界]
+147.0 没有解决任意维正特征奇点消解。它严格关闭的是一个新的高维证书类：在完美域上，若
+$S$ 光滑、$W\to S$ 相对光滑且相对维数为二，有限 Rees owner 的积分闭包余项
+$\cO_W/K$ 对 $S$ 有限局部自由，并在有限 étale 覆盖后带有有限、等变、同时实现的
+complete base-point/proximity forest，且每个暴露根都由当前 owner 逐 degree 支付，则存在
+有限个普通光滑中心爆破使 transformed Rees algebra 的奇异轨迹为空。环境维数
+$\dim W=\dim S+2$ 可任意大，余项支撑在总空间中可为正维；但证书的自动构造、cluster-type
+跳变、分歧碰撞、Frobenius--kangaroo、纯不可分下降与一般高维支撑仍开放。
+\end{tcolorbox}
+\tableofcontents
+\newpage
+
+\section{S1 前沿复述}
+146.0 已在完美域光滑曲面上把任意有限 Rees algebra 编译为加权活动支撑、Cartier、complete
+点树与 monomial 四阶段，并用 Hoskin--Deligne 点基能量修复了 raw colength 缺口。高维第一道
+不可回避的边界是：除去 divisorial hull 后，余项支撑通常为正维；局部 Artinian 长度不再可用，
+而 constant Hilbert polynomial 或 flatness 本身既不产生光滑中心，也不固定 infinitely-near
+base-point forest。
+
+\section{S2 任务锁定}
+本轮唯一主任务是 \texttt{Q147-1 relative complete-module forest}。按照 145.0 战略框架，目标
+不是把 ``相对 Hilbert'' 当成新万能标量，而是找到一个非平凡、可全图表更新、可 étale 下降、
+有精确 block rank 的首个正维证书类；同时必须构造最小反例，划清 flatness、smooth support 与
+constant cluster type 三个层次。
+
+\section{S3 主体执行}
+\subsection{相对状态与入口门槛}
+固定完美域 $k$、连通光滑 $k$-scheme $S$、相对维数二的光滑态射
+\[
+\pi:W\longrightarrow S,
+\]
+相对 SNC 历史边界 $E$，以及 $W$ 上有限生成 Rees algebra
+\[
+\G=\cO_W[f_1W^{n_1},\ldots,f_sW^{n_s}].
+\]
+令 $b=\operatorname{lcm}(n_1,\ldots,n_s)$，作齐次幂压缩
+\[
+J=(f_1^{b/n_1},\ldots,f_s^{b/n_s}).
+\]
+按照 144--146 的积分等价框架，以 $\bar J$ 替换 $J$，并写成
+\[
+\boxed{\bar J=\cO_W(-D)K.}
+\]
+147.0 只在以下门槛通过时进入 relative residual tier：
+\begin{enumerate}
+\item $D_{\mathrm{red}}+E$ 在当前 owner-active locus 上 relative SNC；
+\item $F=\cO_W/K$ 对 $S$ 有限局部自由；
+\item 每个几何纤维的 $K_s$ 是二维正则局部环境中的 finitely supported complete ideal packet；
+\item 输入带有下述有限 étale simultaneous complete-cluster certificate；
+\item 所有拟议中心先通过 closed、smooth、owner-contained、SNC、descent 五重硬过滤。
+\end{enumerate}
+
+\subsection{FERCC：有限 étale 相对完全点簇证书}
+\begin{definition}[D-147-01]
+称 $(W/S,E,K)$ 带有 \emph{FERCC} 证书，如果存在有限 étale 满射 $S'\to S$，以及在
+$W'=W\times_SS'$ 的 successive relative blowup models 上实现的有限有向 proximity forest
+$T$，满足：
+\begin{enumerate}
+\item 每个顶点 $v$ 对应有限 étale 于 $S'$ 的闭 smooth multisection $C_v$；同一代的中心两两不交；
+\item 父子边精确表示第一次邻域中的 infinitely-near successor；
+\item 顶点带局部常值正整数 $r_v$，等于 fibrewise complete transform 在该根的 order；
+\item 对每个几何点 $s'\to S'$，$T_{s'}$ 恰为 $K_{s'}$ 的完整 finite base-point/proximity forest；
+\item 覆盖群胚作用保持顶点、边、orders、birth IDs 与 payment certificates；
+\item 当前可执行顶点是祖先均已执行的 exposed roots；每个 active orbit batch $C$ 满足
+\[
+\bar J_n\subset I_C^b
+\]
+且与当前边界 relative SNC；
+\item 变换后保存 complete transform 与完整 proximity 数据，禁止以 raw weak transform 或单一长度替代；
+\item 新顶点只能由注册父边产生，archive 后禁止 external birth。
+\end{enumerate}
+\end{definition}
+FERCC 是一个有限、可核验的输入证书。147.0 不声称任意相对余项族自动具有 FERCC；这一点是
+本轮真实性边界的核心，而非技术性保留。
+
+\subsection{相对 Hoskin--Deligne 向量束秩}
+\begin{definition}[D-147-02]
+设 $F=\cO_W/K$ 对 $S$ 有限局部自由，定义
+\[
+\Hrel(K/S):=\operatorname{rank}_S\pi_*F.
+\]
+若 $C_v\to S'$ 的 degree 为 $d_v$，则 FERCC 的点基表达式候选为
+\[
+\Hrel(T):=\sum_{v\in T}d_v\binom{r_v+1}{2}.
+\]
+\end{definition}
+
+\begin{lemma}[L-147-01：Relative Hoskin--Deligne Bundle Rank Formula]
+在 FERCC 门槛下，
+\[
+\boxed{
+\operatorname{rank}_S\pi_*(\cO_W/K)
+=
+\sum_{v\in T}d_v\binom{r_v+1}{2}.}
+\]
+\end{lemma}
+\begin{proof}
+有限局部自由模的 rank 等于每个几何纤维的长度，并在有限 étale 拉回后保持不变。对任一几何纤维，
+二维 complete ideal 的 Hoskin--Deligne 公式给出
+\[
+\ell(\cO_{W_s}/K_s)=
+\sum_{v\mid s}[\kappa(v):\kappa(s)]\binom{r_v+1}{2}.
+\]
+FERCC 保证 $r_v$ 与 finite-étale degrees 局部常值，且 fibre forest 无遗漏。故右端在 $S'$ 上等于
+向量束 rank；等式对 finite étale descent 有效，下降到 $S$。这里的秩不是总空间局部环的
+Artinian colength，而是基上的 finite-locally-free rank。证毕。
+\end{proof}
+
+\subsection{根分裂的精确 degree-weighted 下降}
+\begin{lemma}[L-147-02：Degree-Weighted Relative Root-Splitting]
+令 $C$ 为 active exposed roots 的完整有限 étale 轨道 batch。若一个轨道的 degree 与 root order
+分别为 $d$ 与 $r$，则沿 $C$ 爆破、取 complete transforms 并暴露全部 children 后，
+\[
+\boxed{
+\Hrel(K'/S)=\Hrel(K/S)-d\binom{r+1}{2}.}
+\]
+不同 order 的不交轨道同时执行时，下降量为对应和。
+\end{lemma}
+\begin{proof}
+在 $S'$ 上轨道分裂为不交 sections。Blowup 与 flat base change 相容，strict transform 与 étale
+localization 相容；因此逐几何纤维可直接应用 146.0 的 complete-ideal root-splitting。父根贡献
+被删除，其余正 point-basis entries 按第一邻域 children 完整分组。求和后按轨道 degree 加权，
+再下降到 $S$。由于 active root 的 $r>0$，下降严格。证毕。
+\end{proof}
+
+\subsection{轨道中心的普通光滑下降}
+\begin{lemma}[L-147-03：Finite-Étale Orbit-Center Descent]
+FERCC 中任一 exposed full orbit batch 在 $S'$ 上是有限个不交 sections。它下降为 $W$ 上闭、
+finite étale 于 $S$、因而 smooth 的普通中心；owner containment 与 relative-SNC certificates
+亦下降。其 blowup 拉回 $S'$ 后等于 split batch blowup。
+\end{lemma}
+\begin{proof}
+光滑态射的 section 是 regular immersion。完整轨道的闭理想及 cocycle 是群胚不变的，故 fpqc
+下降得到闭子概形 $C\subset W$；$C\to S$ 在覆盖上是有限 étale，故本身有限 étale、smooth。
+理想包含 $\bar J_n\subset I_C^b$ 和 SNC 性均可 fpqc/étale 局部核验。Blowup 与 flat base change
+相容。于是中心位于原空间，并非 alteration 上任取一个 branch。证毕。
+\end{proof}
+
+\subsection{Dormant subtree 剪枝}
+\begin{lemma}[L-147-04：Dormant-Subtree Pruning and No-Rebirth]
+在 Cartier normalization 后，若 exposed root $v$ 满足
+\[
+\ord_v(K)+\nu_v(D)<b,
+\]
+则将 $v$ 与尚未暴露的全部 descendants 归档是安全的；该 subtree 不会在无原父祖先的情况下
+重新 active。
+\end{lemma}
+\begin{proof}
+$v$ 不在当前 $\Sing(\bar J,b)$。其他 active root batches 与其邻域不交；Cartier quotient 只降低
+除子权；complete-transform births 只能来自已执行父顶点的注册 children；monomial phase 仅在
+residual-unit locus 执行。因此无操作可在该归档邻域无祖先地提高 total owner order。若某注册
+后裔未来被暴露，它必位于父根已执行的同一 lineage，不构成重生。证毕。
+\end{proof}
+
+\subsection{主定理：正维余项族的 FERCC 编译}
+\begin{theorem}[T-147-01：FERCC Relative Residual Compiler]
+在本节入口条件与 FERCC 证书下，存在有限个普通光滑中心爆破与已审计的 Cartier controlled
+extractions，使最终 transformed Rees algebra 满足
+\[
+\boxed{\Sing(\G_N)=\varnothing.}
+\]
+该序列与 étale 基变换和 finite monodromy 相容。
+\end{theorem}
+\begin{proof}
+执行以下有限状态算法：
+\begin{enumerate}
+\item 齐次幂压缩、积分闭包及 $\bar J=\cO(-D)K$；
+\item 只在 relative-SNC 已准备的 active locus 进入本层；
+\item 沿高权 smooth relative Cartier components 做有限 controlled extraction；
+\item 计算 exposed roots，并按完整 finite-étale orbit batch 选择中心；
+\item 归档 owner-dormant roots；
+\item 沿 active batch 爆破，更新 complete transforms、orders 与 proximity forest；
+\item 由 L-147-02 严格降低非负整数 $\Hrel$；
+\item $\Hrel=0$ 后，$K=\cO_W$，状态进入真实 relative marked-monomial/SNC terminal，调用
+132--136 的无标号组合模块。
+\end{enumerate}
+中心合法性由定义与 L-147-03 给出。Cartier 次数有限；每个 residual block 使 $\Hrel$ 严格下降，
+故 residual phase 有限；monomial phase 由既有组合良序终止。L-147-04 排除跨 phase 循环。
+积分等价性把 terminal pair 的空奇异轨迹传回原 Rees algebra。证毕。
+\end{proof}
+
+\begin{theorem}[T-147-02：Finite Reachability and No-Rebirth]
+令 phase $P=2,1,0$ 分别表示 Cartier、FERCC residual、relative monomial。定义
+\[
+\Xi_{147}^{\mathrm{rel}}
+=(P,Q_{\mathrm{Cartier}},\Hrel,\Omega_{\mathrm{forest}},\Omega_{\mathrm{mon}})
+\]
+并按序数和/字典序解释。每个认证 block 后 $\Xi_{147}^{\mathrm{rel}}$ 严格下降；整个 registry
+finite reachable，且没有跨模块或跨 orbit 的无祖先重生。
+\end{theorem}
+\begin{proof}
+Cartier phase 的 $Q_{\mathrm{Cartier}}$ 严格下降；residual phase 的 $\Hrel$ 由 L-147-02 严格下降；
+phase switch 支配所有低层增长；monomial rank 已知良基。全部 births 来自有限 forest 边，全部
+共轭点以完整 orbit batch 更新，stable IDs 不复用。L-147-04 处理 dormant 分支。证毕。
+\end{proof}
+
+\subsection{代表算例一：乘积长链}
+令 $W=S\times\operatorname{Spec}k[x,y]$，
+\[
+K_m=(x,y^m).
+\]
+则 $\cO_W/K_m$ 对 $S$ 自由 rank $m$。FERCC 是一条长度 $m$ 的 section chain，每个 point-basis
+entry 为 $1$，故 $\Hrel=m$。沿 $x=y=0$ 爆破：在 $y$-chart 中 $x=yX$，complete transform 为
+\[
+(X,y^{m-1}),
+\]
+而 $x$-chart residual 为单位。因此
+\[
+m\longrightarrow m-1\longrightarrow\cdots\longrightarrow1\longrightarrow0.
+\]
+当 $\dim S>0$ 时，每个中心与 $S$ 同维，这是正维余项编译，而非曲面闭点算法的语言替换。
+
+\subsection{代表算例二：finite-étale monodromy}
+设 $S=\operatorname{Spec}k[t,t^{-1}]$，在有限 étale cover
+$S'=\operatorname{Spec}k[u,u^{-1}]$、$u^n=t$ 上，余项 roots 分裂成群作用置换的 $n$ 个不交
+sections。选择一个有标号 section 不下降；选择完整 orbit batch 得到 $S$ 上 finite étale smooth
+center，且 HD decrement 乘以 degree $n$。无标号性由 orbit invariance 实现，而非人为排序。
+
+\subsection{三个最小反例}
+\begin{counterexample}[X-147-01：finite flat 不保证光滑中心]
+取
+\[
+A=k[t,x,y],\qquad K=(x,y(y-t)).
+\]
+由 $y^2=ty$，$A/K$ 是 $k[t]$-自由模，基 $\{1,y\}$，rank 恒为 $2$。但 support
+$V(x,y(y-t))$ 是 sections $y=0$ 与 $y=t$ 的并，在原点相交；其 Jacobian rank 在
+$t=x=y=0$ 下降，故不是光滑中心。常 Hilbert/finite flatness 本身不满足 Z2。
+\end{counterexample}
+
+\begin{counterexample}[X-147-02：光滑支撑与常长度不决定 point forest]
+取
+\[
+K=(x^2,xy,y^3-tx)\subset k[t,x,y].
+\]
+商对 $k[t]$ 自由，基 $\{1,x,y,y^2\}$，rank 恒为 $4$；radical 为 $(x,y)$，support 是光滑 section。
+在 $t=0$ 纤维，complete point basis 为 $(2,1)$；在 $t\ne0$，令
+$u=x-t^{-1}y^3$，理想化为 $(u,y^4)$，point basis 为 $(1,1,1,1)$。两者 HD energy 都是 $4$，
+但下一次爆破的 child forest 不同。故 \{support, rank\} 不能替代完整 proximity forest。
+\end{counterexample}
+
+\begin{counterexample}[X-147-03：分歧有限支撑不进入 FERCC]
+取 $K=(x,y^2-t)$。商对 $k[t]$ 自由 rank $2$，但 support 在 $t=0$ 分歧，不能经 finite étale
+base change 变成不交 section orbit。这个例子不证明其不可消解，只精确标记 FERCC descent 的
+边界：需要新的 discriminant/ramification block。
+\end{counterexample}
+
+\subsection{显著推进门槛结算}
+本轮并非把 146.0 与 $S$ 做形式乘积后换名。严格增量是：
+\begin{enumerate}
+\item 将二维 local colength 提升为 finite-locally-free quotient 的 relative HD bundle rank；
+\item 证明 simultaneous complete forest 中根分裂的 degree-weighted 精确下降；
+\item 将 split sections 编译为原空间上的无标号 finite-étale orbit center；
+\item 用两个平坦族反例分离 Hilbert flatness、smooth support 与 constant cluster type。
+\end{enumerate}
+因此 145.0 桥接定理 6.4 的第一个非平凡正维证书类被关闭；一般 relative residual block 仍未关闭。
+
+\section{S4 怀疑者审查}
+最薄弱处是 FERCC 的 effectivity。若把它误写成 constant Hilbert polynomial 的自动推论，
+X-147-01 与 X-147-02 立即推翻整轮。真实攻击如下：
+\begin{enumerate}
+\item 删除 proximity forest，只存 Fitting strata、support 与 rank。X-147-02 中 special/generic
+fibre 的 child 数与 orders 不同，有限后继不可恢复；攻击成功。
+\item 删除 finite étale，允许任意 finite flat support。X-147-01 的 union center 奇异；攻击成功。
+\item 尝试把 ramified support 作为 orbit center。X-147-03 说明它不能由 finite étale sections 下降；
+该问题必须退出本 tier，不能偷换为 regular center。
+\end{enumerate}
+仍未解决：FERCC 的自动构造；cluster boundary 的 owner-paid smooth refinement；
+Frobenius coefficient packet 与 relative forest 的共享中心；不完美域上的 smooth/regular 差异；
+kangaroo fuel 与 $\Hrel$ 的联合无重置秩。
+
+\section{S5 裁判结算}
+\subsection{登记册}
+\begin{longtable}{p{2.7cm}p{11.8cm}}
+\toprule
+编号 & 内容\\
+\midrule
+D-147-01 & FERCC：finite-étale relative complete-cluster certificate。\\
+D-147-02 & $\Hrel$：relative Hoskin--Deligne bundle rank。\\
+D-147-03 & orbit-root batch：完整 finite-étale 共轭暴露根批次。\\
+L-147-01 & Relative Hoskin--Deligne Bundle Rank Formula。\\
+L-147-02 & Degree-Weighted Relative Root-Splitting。\\
+L-147-03 & Finite-Étale Orbit-Center Descent。\\
+L-147-04 & Dormant-Subtree Pruning and No-Rebirth。\\
+T-147-01 & FERCC Relative Residual Compiler。\\
+T-147-02 & FERCC Finite Reachability and No-Rebirth。\\
+X-147-01 & finite-flat collision support 可以奇异。\\
+X-147-02 & smooth support + constant rank 不决定 point forest。\\
+X-147-03 & ramified finite support 不进入 finite-étale section tier。\\
+G-147-01 & 从一般 integral-complete relative residual 自动构造 FERCC。\\
+G-147-02 & cluster-type boundary 的 owner-paid smooth stratification。\\
+G-147-03 & ramified collision 与 imperfect-field descent。\\
+G-147-04 & Frobenius-residual shared-center theorem。\\
+G-147-05 & kangaroo fuel 与 relative forest 的联合序和。\\
+\bottomrule
+\end{longtable}
+
+\begin{conjecture}[C-147-01：Intrinsic FERCC Stratification，置信度 32\%]
+对 integral-complete relative codimension-two residual module，存在由 normalized blowup、relative
+Fitting/Hilbert 数据、proximity incidence 与 normal flatness 定义的有限 stratification；每个
+stratum 上取得 FERCC，边界进入严格较低基维或更高 leading/Frobenius 缺陷。
+\end{conjecture}
+最可能死因是 cluster stack 需要 ramified/Artin groupoid；flattening strata 可奇异；complete
+ideal factorization 在家族中可能有无界 specialization；Frobenius jumps 可与 cluster boundary 耦合。
+
+\section{S6 算法版本 R-v147-AC}
+\begin{enumerate}
+\item homogeneous power compression、integral closure、Rees provenance 冻结；
+\item 分解 $\bar J=\cO(-D)K$；
+\item 所有中心先过 closed、smooth、current-owner-contained、relative-SNC、descent 硬过滤；
+\item active support 未 relative SNC 时退出并返回 G-147-02；
+\item 检查 $\cO/K$ 是否 finite locally free over smooth $S$；
+\item 构造或读取 FERCC，核查 fibre completeness、proximity、orders、cocycle、no external birth；
+\item 执行有限 Cartier quotient；
+\item 归档 owner-dormant exposed roots；
+\item 选择完整 finite-étale orbit batch；
+\item 沿下降后的普通 smooth center 爆破并计算 complete transforms；
+\item 核验 $\Hrel$ 精确下降，否则立即输出 gap；
+\item $\Hrel=0$ 后仅在 residual-unit locus 进入 relative marked-monomial scheduler；
+\item cluster jump、ramification、nonflatness、positive relative fibre dimension、Frobenius-additive 或
+kangaroo 状态不得伪装成 FERCC。
+\end{enumerate}
+相对 \texttt{R-v146-AB}，新版本保留全部 surface phases，新增 finite-étale relative cluster state、
+degree-weighted HD rank、orbit descent 与三个严格退出门槛。
+
+\section{S7 队列刷新}
+\begin{enumerate}
+\item \texttt{Q148-1 intrinsic FERCC detection}：从 normalized blowup 与 relative complete-ideal
+factorization 构造 certificate。
+\item \texttt{Q148-2 cluster-boundary compiler}：处理 X-147-01/02 的碰撞与类型跳变，寻找
+owner-paid discriminant/normal-flat smooth strata。
+\item \texttt{Q148-3 Frobenius-residual collision}：研究 $z^{p^e}+F$ coefficient packet 与
+FERCC root batch 是否共享中心。
+\item \texttt{Q148-4 ramified/imperfect descent}：区分 smooth、regular、radicial multisections。
+\item \texttt{Q148-5 kangaroo-relative ordinal sum}：把 finite fuel 与 $\Hrel$、proximity ancestry
+合成无重置秩。
+\end{enumerate}
+
+\section{S8 新版 RSF}
+\begin{tcolorbox}[title=RSF v147]
+\textbf{轮次：}147.0；\textbf{算法：}\texttt{R-v147-AC}；\textbf{主轨道：}A，Rees/idealistic-filtration
+证书编译。新关闭层为 smooth base 上 relative surface family 的 FERCC positive-dimensional
+residual tier。最强结论为 T-147-01/02；失败博物馆新增 X-147-01--03。当前最深前沿是从任意
+integral-complete relative residual module 内禀产生 FERCC，并清理 cluster-type boundary。
+任意维正特征奇点消解仍开放。
+\end{tcolorbox}
+在 FERCC tier 内，$(Z_1,Z_2,Z_3,Z_4,Z_5)=(100,100,100,100,100)$。这只是证书层仪表盘；
+一般状态的 Z1/Z2 仍被 G-147-01/02/04 阻断，不能用 tier 满分替代全局完成度。
+
+\section{计算与例子库}
+\texttt{progress147\_calc.py} 对以下对象作 exact arithmetic regression：
+\begin{itemize}
+\item triangular Hoskin--Deligne identities 与 degree-weighted root terms；
+\item $K_m=(x,y^m)$ 的大量 product chains；
+\item 随机有限 proximity forests 的 root-splitting 与有限终止；
+\item finite-étale orbit batches、dormant pruning 与 phase lex rank；
+\item X-147-01 的 rank-two algebra relation、X-147-02 的两种 point-basis energy；
+\item 147 example-library delta 的 ID 与 canonical hash 唯一性。
+\end{itemize}
+程序输出末尾必须为 \texttt{ALL\_E\_147\_CHECKS\_PASS}。计算只验证显式递推与软件实现，
+不替代一般数学证明。
+
+\section{外部依赖与文献边界}
+\begin{enumerate}
+\item Stacks Project，Tag 052F：finitely presented module 的 flattening stratification 与 Fitting
+strata；本轮同时强调 flattening stratum 不自动光滑。
+\item Stacks Project，Tag 067R：smooth morphism 的 section 是 regular immersion。
+\item Stacks Project，Tag 0863：blowup/strict transform 与 étale localization、flat base change 相容。
+\item Clare D'Cruz，\emph{Integral closedness of $MI$ and the formula of Hoskin and Deligne for
+finitely supported complete ideals}，arXiv:math/0603211。
+\item Encinas--Villamayor 的 Rees integral-equivalence 框架；Kawanoue--Matsuki 的 idealistic
+filtration 与 block/eventual-decrease 思想；146.0 的 complete residual point forest。
+\end{enumerate}
+这些外部来源不陈述 T-147-01/02；本轮新内容是 FERCC 有限接口、relative HD bundle rank、
+degree-weighted root split、orbit-center descent、三个反例与联合 no-rebirth 的组合证明。
+
+\section{最终真实性声明}
+\begin{tcolorbox}[title=147.0 的严格结算]
+\begin{center}
+\Large
+\textbf{147.0 首次把 146.0 的零维曲面 complete-point forest\\
+提升为任意环境维数中的正维 finite-étale relative forest compiler。}
+\end{center}
+它不是一般高维消解，因为 simultaneous cluster certificate 尚未自动产生；但它已经是一个真正
+高于曲面闭点层、具有合法中心、全图表/étale 更新、精确整数下降与 no-rebirth 的严格证书类。
+下一轮必须攻击 FERCC effectivity 与 cluster boundary，而不能重复本轮 theorem。
+\end{tcolorbox}
+\end{document}
